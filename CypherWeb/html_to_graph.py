@@ -44,7 +44,8 @@ def has_payload(element):
         element, str
     ):  # hot fix for ('NavigableString' object has no attribute 'contents')
         return True
-    return len(element.contents) == 1 and len(element.text.strip()) > 2
+
+    return len(element.findChildren()) == 0  # and len(element.text.strip()) > 2
 
 
 def format_text(text):
@@ -203,10 +204,12 @@ def clean_graph(graph, only_intermediate=False):
             and len(get_neighbors(graph, node)) == 0
         )
 
+    # def is_bridge_node(node):
+    #     return graph.nodes[node]["payload"] is None and len(
+    #         get_predecessors(graph, node)
+    #     ) == len(get_neighbors(graph, node))
     def is_bridge_node(node):
-        return graph.nodes[node]["payload"] is None and len(
-            get_predecessors(graph, node)
-        ) == len(get_neighbors(graph, node))
+        return len(get_predecessors(graph, node)) == len(get_neighbors(graph, node))
 
     if only_intermediate:
         nodes_to_delete = [node for node in graph.nodes if is_bridge_node(node)]
@@ -214,7 +217,7 @@ def clean_graph(graph, only_intermediate=False):
         nodes_to_delete = [
             node for node in graph.nodes if is_empty_leaf(node) or is_bridge_node(node)
         ]
-
+    print(nodes_to_delete)
     for node in nodes_to_delete:
         try:
             graph.add_edges_from(
