@@ -2,3 +2,4 @@ lib
 /CypherWeb.egg-info
 /sandbox.ipynb
 *.html
+*.pyc
