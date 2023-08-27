@@ -2,6 +2,7 @@ from collections import defaultdict, Counter
 import networkx as nx
 import itertools
 from .html_to_graph import get_neighbors
+from rich import print as rprint
 
 
 def get_pseudo_class(graph, node):
@@ -44,25 +45,16 @@ def get_grid_candidates(raw_graph):
     # step 4 : filter candidates with 0 entropy (same child type)
     grid_cands = {}
     for inc in incestors_scores:
+        inc_neighbors = get_neighbors(raw_graph, inc)
         zero_entropy = (
-            len(
-                set(
-                    [node["id"].split("_")[0] for node in get_neighbors(raw_graph, inc)]
-                )
-            )
-            == 1
+            len(set([node["id"].split("_")[0] for node in inc_neighbors])) == 1
             and len(
-                set(
-                    [
-                        get_pseudo_class(raw_graph, node["id"])
-                        for node in get_neighbors(raw_graph, inc)
-                    ]
-                )
+                set([get_pseudo_class(raw_graph, node["id"]) for node in inc_neighbors])
             )
             == 1
         )
 
         if zero_entropy:
             # rprint(inc,[raw_graph.nodes[node['id']] for node in get_neighbors(raw_graph, inc)])
-            grid_cands[inc] = incestors_scores[inc]
+            grid_cands[inc] = len(inc_neighbors)
     return grid_cands

@@ -36,7 +36,7 @@ def hash_element(element_id):
     return hashlib.sha1(element_id.encode("utf-8")).hexdigest()
 
 
-def has_payload(element):
+def has_payload(element, except_nodes=["a"]):
     """
     only capture payload if element is leaf
     """
@@ -45,7 +45,7 @@ def has_payload(element):
     ):  # hot fix for ('NavigableString' object has no attribute 'contents')
         return True
 
-    return len(element.findChildren()) == 0  # and len(element.text.strip()) > 2
+    return len(element.findChildren()) == 0 or element.name in except_nodes
 
 
 def format_text(text):
@@ -81,7 +81,7 @@ def normalize_element(soup_element):
 
 
 def traverse_html(
-    _soup, _graph: nx.Graph, _counter, global_counter, _parent=None
+    _soup, _graph: nx.Graph, _counter, global_counter, _parent=None, hash_ids=False
 ) -> None:
     for element in _soup.contents:
         element_norm = normalize_element(element)
@@ -97,8 +97,9 @@ def traverse_html(
 
             _name_count = _counter.get(element_name)
             _element_name = f"{element_name}_{_name_count}_{element_class}"
-            node_id = f"{element_name}_{hash_element(_element_name)}"  # hash name
-            # node_id = _element_name
+            node_id = _element_name
+            if hash_ids:
+                node_id = f"{element_name}_{hash_element(_element_name)}"  # hash name
 
             ## entry_point
             if _parent is None and len(_graph.nodes) == 0:
@@ -153,7 +154,12 @@ def traverse_html(
             _counter[element_name] += 1
             if not element_norm["is_raw_text"] and len(element.findChildren()) != 0:
                 traverse_html(
-                    element_content, _graph, _counter, global_counter, node_id
+                    element_content,
+                    _graph,
+                    _counter,
+                    global_counter,
+                    node_id,
+                    hash_ids=hash_ids,
                 )
 
 
@@ -185,7 +191,7 @@ def get_predecessors(graph, node):
     return [{"id": node_id} for node_id in graph.predecessors(node)]
 
 
-def clean_graph(graph, only_intermediate=False):
+def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
     """
     Deletes nodes from a graph that satisfy certain conditions. Nodes that are empty leaves or bridge nodes are removed.
     If `only_intermediate` is True, only bridge nodes are deleted.
@@ -217,7 +223,13 @@ def clean_graph(graph, only_intermediate=False):
         nodes_to_delete = [
             node for node in graph.nodes if is_empty_leaf(node) or is_bridge_node(node)
         ]
-    print(nodes_to_delete)
+    # print(nodes_to_delete)
+    node_type_exceptions
+    nodes_to_delete = [
+        node
+        for node in nodes_to_delete
+        if graph.nodes[node]["element_type"] not in node_type_exceptions
+    ]
     for node in nodes_to_delete:
         try:
             graph.add_edges_from(
