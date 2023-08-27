@@ -1,2 +1,4 @@
 /CypherWeb.egg-info
 /sandbox.ipynb
+__pycache__/
+*.pyc
