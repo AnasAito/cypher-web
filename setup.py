@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name="CypherWeb",
+    name="cypherweb",
     version="0.1.0",
     description="Query any web page with Cypher",
     author="Anas AIT AOMAR",
     author_email="anas1999@gmail.com",
-    packages=["CypherWeb"],
+    packages=["cypherweb"],
     install_requires=[
         # List any dependencies your module requires
     ],

@@ -1,3 +1,5 @@
+from cypherweb.core.node import Node
+from cypherweb.core.graph import Graph
 import requests
 
 
@@ -14,3 +16,13 @@ def get_page(page_url):
         return response.text
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
+
+
+class BasicCrawler(Node):
+    def __init__(self) -> None:
+        pass
+
+    def process(self, graph: Graph) -> None:
+        page_url = graph.page_url
+        html_payload = get_page(page_url)
+        graph.html_payload = html_payload

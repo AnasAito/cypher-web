@@ -1,8 +1,7 @@
-from collections import defaultdict, Counter
-import networkx as nx
+from collections import Counter
 import itertools
-from .html_to_graph import get_neighbors
-from rich import print as rprint
+from cypherweb.core.node import Node
+from cypherweb.core.graph import Graph
 
 
 def get_pseudo_class(graph, node):
@@ -23,7 +22,7 @@ def get_grid_candidates(raw_graph):
         0
     ]
     for node in nodes_with_payload:
-        path = nx.shortest_path(raw_graph, source=root_node, target=node)
+        path = raw_graph.get_shortest_path(source=root_node, target=node)
         # print(path)
         dist_to_root = len(path)
         if f"dist_{dist_to_root}" not in clusters:
@@ -31,21 +30,19 @@ def get_grid_candidates(raw_graph):
         else:
             clusters[f"dist_{dist_to_root}"].append(node)
 
-    # rprint(clusters)
-
     # # step3 : get common ancestor for each cluster
     incestors_scores = Counter()
     for nodes in clusters.values():
         # get all pairs
         pairs = list(itertools.combinations(nodes, 2))
-        incestors = dict(nx.all_pairs_lowest_common_ancestor(raw_graph, pairs))
+        incestors = dict(raw_graph.all_pairs_lowest_common_ancestor(pairs))
         for inc in incestors.values():
             incestors_scores[inc] += 1
     # rprint(incestors_scores)
     # step 4 : filter candidates with 0 entropy (same child type)
     grid_cands = {}
     for inc in incestors_scores:
-        inc_neighbors = get_neighbors(raw_graph, inc)
+        inc_neighbors = raw_graph.get_neighbors(inc)
         zero_entropy = (
             len(set([node["id"].split("_")[0] for node in inc_neighbors])) == 1
             and len(
@@ -55,6 +52,16 @@ def get_grid_candidates(raw_graph):
         )
 
         if zero_entropy:
-            # rprint(inc,[raw_graph.nodes[node['id']] for node in get_neighbors(raw_graph, inc)])
             grid_cands[inc] = len(inc_neighbors)
     return grid_cands
+
+
+class GridClassifier(Node):
+    def __init__(self) -> None:
+        pass
+
+    def process(self, graph: Graph) -> None:
+        grid_candidates = get_grid_candidates(graph)
+        # annotate vertices
+        attrs = {node: {"type": "grid"} for node in grid_candidates}
+        graph.set_node_attributes(attrs)
