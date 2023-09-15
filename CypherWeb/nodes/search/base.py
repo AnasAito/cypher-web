@@ -9,15 +9,13 @@ class GraphNearestNeighbor(Node):
         distance = 0
         while node_down != node_up:
             node_down = graph.get_predecessors(node_down)[0]["id"]
-            # print(node_down)
             distance += 1
         return distance
 
     def score_pairs_of_nodes(self, graph, node_ref, node):
-        # Note : nodes within grid will return 0
         ancestor = graph.lowest_common_ancestor(node_ref, node)
-        # compute distance
-        # print(ancestor)
+        if ancestor == node:  # Note : nodes within grid will return 0
+            return self.get_distance(graph, node_ref, ancestor)
         return self.get_distance(graph, node, ancestor)
 
     def run(self, payload: dict, params: dict = None) -> dict:
@@ -36,10 +34,10 @@ class GraphNearestNeighbor(Node):
                     # print(grid_node)
                     distance = self.score_pairs_of_nodes(graph, anchor_node, grid_node)
                     # print(distance)
-                    if (
-                        distance != 0
-                    ):  # TODO we should solve why main node is a grid ? then we can activate again
-                        results[grid_node] = distance
+                    # if (
+                    #     distance != 0
+                    # ):  # TODO we should solve why main node is a grid ? then we can activate again
+                    results[grid_node] = distance
                     # print("-------------------")
                 # sort by distance
                 results = sorted(results.items(), key=lambda item: item[1])
