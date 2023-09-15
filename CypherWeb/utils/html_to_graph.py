@@ -14,7 +14,7 @@ NOT_PERMITED_TAGS = [
     "style",
     "kin-address-form",
     "picture",
-    "button",
+    # "button",
 ]
 NOT_PERMITED_TEXTS = [
     "view",
