@@ -55,11 +55,13 @@ class GraphNearestNeighbor(Node):
                     key=lambda item: (item[1]["anchor_dist"], item[1]["dist"]),
                 )
                 # get min dist
-                min_dist = results[0][1]["dist"]
+                min_dist = results[0][1]  # ["dist"]
+
                 best_grids = [
                     {"node": node, "distance": distance}
                     for node, distance in results
-                    if distance["dist"] == min_dist
+                    if distance["dist"] == min_dist["dist"]
+                    and distance["anchor_dist"] == min_dist["anchor_dist"]
                 ]
                 output[anchor_node] = best_grids
             return {f"{node_type}_results": output}

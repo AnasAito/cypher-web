@@ -14,13 +14,15 @@ def get_pseudo_class(graph, node):
 def get_grid_candidates(raw_graph):
     # step 1 : get leaf nodes
     nodes_with_payload = [
-        node for node in raw_graph.nodes if raw_graph.nodes[node]["payload"] is not None
+        node
+        for node in raw_graph.nodes
+        if raw_graph.nodes[node].get("payload") is not None
     ]
     # step 2 : get dist from root and cluster nodes based on dist_to_root
     clusters = {}
-    root_node = [node for node in raw_graph.nodes if raw_graph.nodes[node]["is_root"]][
-        0
-    ]
+    root_node = [
+        node for node in raw_graph.nodes if raw_graph.nodes[node].get("is_root")
+    ][0]
     for node in nodes_with_payload:
         path = raw_graph.get_shortest_path(source=root_node, target=node)
         # print(path)

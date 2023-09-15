@@ -40,7 +40,7 @@ class BaseStrRetriever(Node):
             query = params["query"]
             str_match_type = params["str_match_type"]
             str_lower = params["str_lower"]
-            leafs = [node for node in graph.nodes if graph.nodes[node]["payload"]]
+            leafs = [node for node in graph.nodes if graph.nodes[node].get("payload")]
             leafs_contain_query = []
             for node in leafs:
                 score, text = self.score_text_against_query(

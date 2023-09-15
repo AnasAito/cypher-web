@@ -207,7 +207,7 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
 
     def is_empty_leaf(node):
         return (
-            graph.nodes[node]["payload"] is None
+            graph.nodes[node].get("payload") is None
             and len(get_neighbors(graph, node)) == 0
         )
 
@@ -232,6 +232,7 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
         if graph.nodes[node]["element_type"] not in node_type_exceptions
     ]
     for node in nodes_to_delete:
+        # print(node)
         try:
             graph.add_edges_from(
                 itertools.product(graph.predecessors(node), graph.successors(node))
@@ -241,16 +242,18 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
                 graph.nodes[successor]["class"] = (
                     graph.nodes[node]["class"] + graph.nodes[successor]["class"]
                 )
+                # inherit root_status
+                graph.nodes[successor]["is_root"] = (
+                    graph.nodes[node]["is_root"] or graph.nodes[successor]["is_root"]
+                )
             graph.remove_node(node)
         except KeyError as e:
             print(e)
             pass
-    # # clean aggregated class (first and last)
-    # for node in graph.nodes:
-    #     if "&$&" in graph.nodes[node]["class"]:
-    #         graph.nodes[node]["class"] = (
-    #             graph.nodes[node]["class"].split("&$&")[0]
-    #             + "&$&"
-    #             + graph.nodes[node]["class"].split("&$&")[-1]
-    #         )
+
+    # post root re-election
+    for node in graph.nodes:
+        if len(get_predecessors(graph, node)) == 0:
+            graph.nodes[node]["is_root"] = True
+
     return graph
