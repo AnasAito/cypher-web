@@ -13,7 +13,7 @@ class HtmlToGraph(Node):
 
     def process(self, graph: Graph) -> None:
         html_payload = graph.html_payload
-        soup = BeautifulSoup(html_payload, "html.parser").body
+        soup = BeautifulSoup(html_payload, "html.parser")  # .body
         # rprint(soup)
         _global_counter = 0
         traverse_html(

@@ -2,6 +2,7 @@ from typing import Dict
 
 from cypherweb.core.node import Node
 from cypherweb.core.graph import Graph
+import time
 
 
 class GraphProcessPipeline:
@@ -93,14 +94,27 @@ class NodeSearchPipeline:
         self.graph = Graph(page_url)
         self.passing_input = {"_start": {"page_url": page_url, "graph": self.graph}}
         for node_key, node_val in self.dict_nodes.items():
+            # compute time for each node
+            start_time = time.time()
             _params = params.get(node_key, {})
             node = node_val["func"]
             if isinstance(node, Node):
                 output = node(inputs=self.passing_input, params=_params)
+                end_time = time.time()
+                delta_time = end_time - start_time
+                delta_time = str(round(delta_time * 1000, 2)) + "ms"
+                output["run_time"] = delta_time
                 self.passing_input[node_key] = output
             else:
                 processed_graph = node(
                     inputs=self.passing_input,
                 )
                 self.graph = processed_graph
-                self.passing_input[node_key] = {"graph": processed_graph}
+                end_time = time.time()
+                delta_time = end_time - start_time
+                # time to ms str
+                delta_time = str(round(delta_time * 1000, 2)) + "ms"
+                self.passing_input[node_key] = {
+                    "graph": processed_graph,
+                    "run_time": delta_time,
+                }
