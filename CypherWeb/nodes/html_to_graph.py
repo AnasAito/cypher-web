@@ -19,16 +19,7 @@ class HtmlToGraph(Node):
         traverse_html(
             soup, graph._graph, defaultdict(int), _global_counter, hash_ids=False
         )
-        raw_graph = graph._graph
-        root_node = [
-            node for node in raw_graph.nodes if raw_graph.nodes[node].get("is_root")
-        ]
-        rprint(root_node, raw_graph.nodes["div_None_['w-embed']"])
         graph._graph = clean_graph(graph._graph)
-        raw_graph = graph._graph
-        root_node = [
-            node for node in raw_graph.nodes if raw_graph.nodes[node].get("is_root")
-        ]
-        rprint(root_node, raw_graph.nodes[list(raw_graph.nodes)[0]])
-        attrs = {node: {"type": None} for node in graph.nodes}
-        graph.set_node_attributes(attrs)
+
+        # attrs = {node: {"type": []} for node in graph._graph.nodes}
+        # graph.set_node_attributes(attrs)

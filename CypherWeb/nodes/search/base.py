@@ -34,7 +34,8 @@ class GraphNearestNeighbor(Node):
             anchor_nodes = payload["str_matcher"]["anchor_nodes"][:top_k_anchors]
             graph = payload["graph_process_pipe"]["graph"]
             cand_nodes = [node for node in graph.get_nodes_by_type(node_type)]
-
+            if len(cand_nodes) == 0:
+                return {f"{node_type}_results": []}
             for anchor_node in anchor_nodes:
                 anchor_node, score, snippet = anchor_node
                 results = {}
@@ -49,6 +50,7 @@ class GraphNearestNeighbor(Node):
                     # ):  # TODO we should solve why main node is a grid ? then we can activate again
                     results[grid_node] = distance_meta
                     # print("-------------------")
+
                 # sort by distance
                 results = sorted(
                     results.items(),

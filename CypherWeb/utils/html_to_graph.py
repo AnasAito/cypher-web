@@ -103,7 +103,9 @@ def traverse_html(
                 node_id = f"{element_name}_{hash_element(_element_name)}"  # hash name
 
             ## entry_point
-            if _parent is None and len(_graph.nodes) == 0:
+            if (
+                _parent is None
+            ):  # and len(_graph.nodes) == 0: # disable this since some nodes may be orphan
                 # print(node_id)
                 payload = (
                     get_payload(element_content)
@@ -121,6 +123,7 @@ def traverse_html(
                                 "class": "_CLASSJOIN_".join(element_class),
                                 "payload": payload,
                                 "is_root": True,
+                                "type": [],
                             },
                         )
                     ]
@@ -144,6 +147,7 @@ def traverse_html(
                                 "class": element_class,
                                 "payload": payload,
                                 "is_root": False,
+                                "type": [],
                             },
                         )
                     ]
@@ -254,6 +258,7 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
     # post root re-election
     for node in graph.nodes:
         if len(get_predecessors(graph, node)) == 0:
+            # print(node, graph.nodes[node])
             graph.nodes[node]["is_root"] = True
 
     return graph

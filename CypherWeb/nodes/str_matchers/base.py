@@ -38,9 +38,18 @@ class BaseStrRetriever(Node):
         if "graph_process_pipe" in payload:
             graph = payload["graph_process_pipe"]["graph"]._graph
             query = params["query"]
-            str_match_type = params["str_match_type"]
-            str_lower = params["str_lower"]
-            leafs = [node for node in graph.nodes if graph.nodes[node].get("payload")]
+            str_match_type = params.get("str_match_type", "exact")
+            str_lower = params.get("str_lower", False)
+            node_type = params.get("node_type")
+
+            def is_leaf_valid(node):
+                if node_type:
+                    return graph.nodes[node].get(
+                        "payload"
+                    ) and node_type in graph.nodes[node].get("type")
+                return graph.nodes[node].get("payload")
+
+            leafs = [node for node in graph.nodes if is_leaf_valid(node)]
             leafs_contain_query = []
             for node in leafs:
                 score, text = self.score_text_against_query(

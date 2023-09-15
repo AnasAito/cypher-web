@@ -6,8 +6,9 @@ from cypherweb.core.graph import Graph
 
 def get_pseudo_class(graph, node):
     try:
-        return graph.nodes[node]["class"][0]
-    except:
+        return graph._graph.nodes[node]["class"][0]
+    except Exception as e:
+        # print("get_pseudo_class", e)
         return None
 
 
@@ -15,13 +16,15 @@ def get_grid_candidates(raw_graph):
     # step 1 : get leaf nodes
     nodes_with_payload = [
         node
-        for node in raw_graph.nodes
-        if raw_graph.nodes[node].get("payload") is not None
+        for node in raw_graph._graph.nodes
+        if raw_graph._graph.nodes[node].get("payload") is not None
     ]
     # step 2 : get dist from root and cluster nodes based on dist_to_root
     clusters = {}
     root_node = [
-        node for node in raw_graph.nodes if raw_graph.nodes[node].get("is_root")
+        node
+        for node in raw_graph._graph.nodes
+        if raw_graph._graph.nodes[node].get("is_root")
     ][0]
     for node in nodes_with_payload:
         path = raw_graph.get_shortest_path(source=root_node, target=node)
@@ -58,6 +61,9 @@ def get_grid_candidates(raw_graph):
     return grid_cands
 
 
+from rich import print as rprint
+
+
 class GridClassifier(Node):
     def __init__(self) -> None:
         pass
@@ -65,5 +71,9 @@ class GridClassifier(Node):
     def process(self, graph: Graph) -> None:
         grid_candidates = get_grid_candidates(graph)
         # annotate vertices
-        attrs = {node: {"type": "grid"} for node in grid_candidates}
+        attrs = {
+            node: {"type": ["grid"] + graph._graph.nodes[node]["type"]}
+            for node in grid_candidates
+        }
+
         graph.set_node_attributes(attrs)

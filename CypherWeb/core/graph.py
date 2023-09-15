@@ -49,7 +49,7 @@ class Graph:
         self.backend = backend
         if self.backend == "networkx":
             self._graph = nx.DiGraph()
-            self.nodes = self._graph.nodes
+            # self.nodes = self._graph.nodes
         else:
             raise NotImplementedError
 
@@ -78,6 +78,15 @@ class Graph:
         BACKEND_MAP[self.backend]["set_node_attributes"](self._graph, attrs)
 
     def get_nodes_by_type(self, node_type):
+        for node in self._graph.nodes:
+            try:
+                a = node_type in self._graph.nodes[node]["type"]
+            except Exception as e:
+                print(e)
+                print(node)
+                print(self._graph.nodes[node])
         return [
-            node for node in self.nodes if self._graph.nodes[node]["type"] == node_type
+            node
+            for node in self._graph.nodes
+            if node_type in self._graph.nodes[node]["type"]
         ]
