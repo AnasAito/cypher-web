@@ -11,7 +11,7 @@ class Node:
         """Apply a transformation on ``graph``."""
 
     @abstractmethod
-    def run(self, payload: dict, params=None) -> None:
+    def run(self, payload: Union[dict, str], params=None) -> None:
         pass
 
     # def update_passing_input(
@@ -19,7 +19,7 @@ class Node:
     # ) -> None:
     #     passing_input[node_key] = output
 
-    def __call__(self, inputs: Union[dict, Graph], params: dict = None) -> None:
+    def __call__(self, inputs: Union[dict, Graph, str], params: dict = None) -> None:
         if isinstance(inputs, Graph):
             self.process(inputs)
         else:

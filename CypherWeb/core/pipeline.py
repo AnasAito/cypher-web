@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 
 from cypherweb.core.node import Node
 from cypherweb.core.graph import Graph
@@ -89,11 +89,28 @@ class NodeSearchPipeline:
         """
         self.dict_nodes[name] = {"func": enricher}
 
-    def run(self, page_url: str, params: dict) -> None:
+    def run(self, pipe_input: Union[dict, str]) -> None:
         """Run the pipeline on document"""
+
+        if type(pipe_input) == str and "cypher_api" in self.dict_nodes:
+            output = self.dict_nodes["cypher_api"]["func"](inputs=pipe_input, params={})
+            # prepare page_url , params
+            page_url = output["page_url"]
+            params = output["params"]
+            # remove "cypher_api"
+            self.dict_nodes = {
+                k: v for k, v in self.dict_nodes.items() if k != "cypher_api"
+            }
+
+            pass
+        if type(pipe_input) == dict:
+            page_url = pipe_input["page_url"]
+            params = pipe_input["params"]
+
         self.graph = Graph(page_url)
         self.passing_input = {"_start": {"page_url": page_url, "graph": self.graph}}
         for node_key, node_val in self.dict_nodes.items():
+            # TODO: normalize node running loop
             # compute time for each node
             start_time = time.time()
             _params = params.get(node_key, {})
