@@ -6,6 +6,17 @@ class GraphNearestNeighbor(Node):
         pass
 
     def get_distance(self, graph, node_down, node_up):
+        """
+        Calculates the distance between two nodes in a graph.
+
+        Parameters:
+            graph (Graph): The graph object representing the graph.
+            node_down (int): The starting node.
+            node_up (int): The target node.
+
+        Returns:
+            int: The distance between the two nodes.
+        """
         distance = 0
         while node_down != node_up:
             node_down = graph.get_predecessors(node_down)[0]["id"]
@@ -13,8 +24,21 @@ class GraphNearestNeighbor(Node):
         return distance
 
     def score_pairs_of_nodes(self, graph, node_ref, node):
+        """
+        Calculates the score for pairs of nodes in a graph.
+
+        Parameters:
+            graph (Graph): The graph object representing the graph.
+            node_ref (Node): The reference node.
+            node (Node): The node to compare with the reference node.
+
+        Returns:
+            dict: A dictionary containing the following keys:
+                - dist (int): The maximum distance between the node and the reference node.
+                - anchor_dist (int): The distance between the reference node and the lowest common ancestor of the node and the reference node.
+        """
         ancestor = graph.lowest_common_ancestor(node_ref, node)
-        if ancestor == node:  # Note : nodes within grid will return 0
+        if ancestor == node:  # Note : nodes within element will return 0
             return {
                 "dist": self.get_distance(graph, node_ref, ancestor),
                 "anchor_dist": self.get_distance(graph, node_ref, ancestor),
@@ -27,6 +51,17 @@ class GraphNearestNeighbor(Node):
         }
 
     def run(self, payload: dict, params: dict = None) -> dict:
+        """
+        Runs the function with the given payload and parameters.
+
+        Args:
+            payload (dict): The payload for the function.
+            params (dict, optional): The parameters for the function. Defaults to None.
+
+        Returns:
+            dict: list of matched nodes
+
+        """
         if "str_matcher" in payload:
             output = {}
             top_k_anchors = params["top_k_anchors"]

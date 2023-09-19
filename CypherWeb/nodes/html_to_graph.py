@@ -12,6 +12,15 @@ class HtmlToGraph(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by extracting information from the HTML payload.
+
+        Args:
+            graph (Graph): The graph object to process.
+
+        Returns:
+            None
+        """
         html_payload = graph.html_payload
         soup = BeautifulSoup(html_payload, "html.parser")  # .body
         # rprint(soup)
@@ -20,6 +29,3 @@ class HtmlToGraph(Node):
             soup, graph._graph, defaultdict(int), _global_counter, hash_ids=True
         )
         graph._graph = clean_graph(graph._graph)
-
-        # attrs = {node: {"type": []} for node in graph._graph.nodes}
-        # graph.set_node_attributes(attrs)

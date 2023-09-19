@@ -7,6 +7,15 @@ def node_is_link(graph, node_id):
 
 
 def get_link_list_candidates(graph):
+    """
+    Generate a list of candidates for link nodes in the given graph.
+
+    Parameters:
+        graph (Graph): The graph from which to generate the candidates.
+
+    Returns:
+        list: A list of nodes that are candidates for link nodes.
+    """
     return [node for node in graph._graph.nodes if node_is_link(graph, node)]
 
 
@@ -15,6 +24,15 @@ class LinkClassifier(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by annotating the vertices with specific attributes.
+
+        Parameters:
+            graph (Graph): The graph to be processed.
+
+        Returns:
+            None
+        """
         grid_candidates = get_link_list_candidates(graph)
         # annotate vertices
         attrs = {

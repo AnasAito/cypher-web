@@ -13,6 +13,18 @@ def get_pseudo_class(graph, node):
 
 
 def get_grid_candidates(raw_graph):
+    """
+    Generates the grid candidates based on the raw graph.
+
+    Args:
+        raw_graph (Graph): The raw graph object.
+
+    Returns:
+        dict: A dictionary containing the grid candidates and their counts.
+
+    Notes:
+        How grids are detected (refer to readme).
+    """
     # step 1 : get leaf nodes
     nodes_with_payload = [
         node
@@ -69,6 +81,15 @@ class GridClassifier(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by annotating the grid vertices with the specified attributes.
+
+        Parameters:
+            graph (Graph): The graph to be processed.
+
+        Returns:
+            None
+        """
         grid_candidates = get_grid_candidates(graph)
         # annotate vertices
         attrs = {

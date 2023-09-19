@@ -14,13 +14,10 @@ class Node:
     def run(self, payload: Union[dict, str], params=None) -> None:
         pass
 
-    # def update_passing_input(
-    #     self, passing_input: dict, node_key: str, output: dict
-    # ) -> None:
-    #     passing_input[node_key] = output
-
-    def __call__(self, inputs: Union[dict, Graph, str], params: dict = None) -> None:
+    def __call__(self, inputs: Union[dict, Graph, str], params: dict = None):
         if isinstance(inputs, Graph):
+            # we diff beteween process and run a process is used to run sub-pipelines as nodes
+            # to be normalized in the future ! (I dont like it)
             self.process(inputs)
         else:
             output = self.run(inputs, params)

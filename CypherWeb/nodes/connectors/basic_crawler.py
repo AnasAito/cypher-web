@@ -23,6 +23,15 @@ class BasicCrawler(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by retrieving the HTML payload of the page URL.
+
+        Args:
+            graph (Graph): The graph object representing the web page.
+
+        Returns:
+            None
+        """
         page_url = graph.page_url
         html_payload = get_page(page_url)
         graph.html_payload = html_payload

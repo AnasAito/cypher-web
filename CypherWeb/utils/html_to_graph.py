@@ -90,6 +90,20 @@ def normalize_element(soup_element):
 def traverse_html(
     _soup, _graph: nx.Graph, _counter, global_counter, _parent=None, hash_ids=False
 ) -> None:
+    """
+    Traverses an HTML element using depth-first search and populates a graph with the element information.
+
+    Args:
+        _soup (BeautifulSoup): The BeautifulSoup object representing the HTML.
+        _graph (nx.Graph): The graph to populate with the element information.
+        _counter (Dict[str, int]): A dictionary to keep track of the count of each element type encountered.
+        global_counter (int): The global counter to assign unique item indices to each element.
+        _parent (Optional[str]): The parent node ID in the graph. Defaults to None.
+        hash_ids (bool): Indicates whether to hash the node IDs. Defaults to False.
+
+    Returns:
+        None: This function does not return any value.
+    """
     for element in _soup.contents:
         element_norm = normalize_element(element)
 

@@ -2,6 +2,20 @@ from .html_to_graph import get_neighbors
 
 
 def render_element_from_root(graph, element, depth=0):
+    """
+    Render an element and its children as string.
+
+    Args:
+        graph (networkx.Graph): The graph containing the elements.
+        element (str): The ID of the element to render.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+    """
     indent = "    " * depth
     element_name = graph.nodes[element]["element_type"]
     indent = "    " * depth

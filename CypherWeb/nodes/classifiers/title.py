@@ -4,6 +4,15 @@ import re
 
 
 def is_elem_heading(string):
+    """
+    Check if the given string is a heading element.
+
+    Parameters:
+        string (str): The string to be checked.
+
+    Returns:
+        bool: True if the string is a heading element, False otherwise.
+    """
     string = string.lower()
     # Define a regular expression pattern to match h1 to h6 headings
     heading_pattern = r"^h[1-6]$"
@@ -13,6 +22,16 @@ def is_elem_heading(string):
 
 
 def get_title_candidates(graph):
+    """
+    Returns a list of title candidates from the given graph.
+
+    Args:
+        graph (Graph): The graph object containing the nodes.
+
+    Returns:
+        list: A list of nodes that are considered title candidates.
+    """
+    # TODO : add more heuritics to detect titles (token count + 0 links within element as proxy ?)
     return [
         node
         for node in graph._graph.nodes
@@ -25,6 +44,15 @@ class TitleClassifier(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by annotating the vertices with title attributes.
+
+        Args:
+            graph (Graph): The graph to be processed.
+
+        Returns:
+            None
+        """
         grid_candidates = get_title_candidates(graph)
         # annotate vertices
         attrs = {

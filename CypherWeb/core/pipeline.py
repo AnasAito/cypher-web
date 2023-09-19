@@ -61,9 +61,8 @@ class GraphProcessPipeline:
 
 
 class NodeSearchPipeline:
-    """Pipeline class to define the way of enriching documents.
+    """pipeline defines sequential way of enriching/consuming the graph.
 
-    The pipeline defines sequential way of enriching documents.
 
     Attributes
     ----------
@@ -81,7 +80,7 @@ class NodeSearchPipeline:
         """Append ``enricher`` to the pipeline.
 
         enricher: instance of Node
-            Enricher to be called on the document when pipeline is run.
+            Enricher to be called on the graph when pipeline is run.
 
         name: str
             Name ``enricher`` to identify it among the other enrichers.

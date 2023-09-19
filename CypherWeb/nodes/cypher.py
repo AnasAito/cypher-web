@@ -6,6 +6,7 @@ source : https://github.com/aplbrain/grand-cypher/tree/master
 """
 
 from cypherweb.core.node import Node
+from rich import print as pprint
 
 # from cypherweb.core.graph import Graph
 # from typing import Dict, List, Callable, Tuple
@@ -353,15 +354,13 @@ class CypherApi(Node):
         }
 
     def run(self, cypher_query: str, params: dict) -> dict:
-        from rich import print as pprint
-
         tree = _AitoCypher.parse(cypher_query)
         # pprint(tree)
         tree_payload = TreeToJson().transform(tree)
         # pprint(tree_payload)
         page_url = tree_payload["page_url"][0]
         _params = self.populate_params(tree_payload)
-        pprint(_params)
+        # pprint(_params)
         # _params = {
         #     "str_matcher": {
         #         "node_type": "title",
