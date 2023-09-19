@@ -7,7 +7,7 @@ import hashlib
 
 NOT_PERMITED_TAGS = [
     "script",
-    "img",
+    # "img",
     "noscript",
     "svg",
     "input",
@@ -34,7 +34,8 @@ NOT_PERMITED_TEXTS = [
 
 
 def hash_element(element_id):
-    return hashlib.sha1(element_id.encode("utf-8")).hexdigest()
+    return int(hashlib.sha1(element_id.encode("utf-8")).hexdigest(), 16) % (10**8)
+    # return hashlib.sha1(element_id.encode("utf-8")).hexdigest()
 
 
 def has_payload(element, except_nodes=["a"]):
@@ -56,8 +57,13 @@ def format_text(text):
 
 def get_payload(node):
     if isinstance(node, str):
-        return {"href": None, "text": format_text(node.text)}
-    return {"href": node.get("href", None), "text": format_text(node.text)}
+        return {"href": None, "text": format_text(node.text), "alt": None, "src": None}
+    return {
+        "href": node.get("href"),
+        "text": format_text(node.text),
+        "alt": node.get("alt"),
+        "src": node.get("src"),
+    }
 
 
 def normalize_element(soup_element):

@@ -11,6 +11,8 @@ def render_element_from_root(graph, element, depth=0):
         payload = graph.nodes[element]["payload"]["text"]
         if element_name == "a":
             payload = graph.nodes[element]["payload"]["href"]
+        if element_name == "img":
+            payload = graph.nodes[element]["payload"]["alt"]
     except:
         payload = None
     print(indent + f"* {element_name} / {payload} *")

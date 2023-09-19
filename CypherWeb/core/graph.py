@@ -77,6 +77,9 @@ class Graph:
     def set_node_attributes(self, attrs):
         BACKEND_MAP[self.backend]["set_node_attributes"](self._graph, attrs)
 
+    def parent_has_child(self, child_cand, parent):
+        return self.lowest_common_ancestor(parent, child_cand) == parent
+
     def get_nodes_by_type(self, node_type):
         for node in self._graph.nodes:
             try:

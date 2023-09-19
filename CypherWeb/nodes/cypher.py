@@ -56,6 +56,8 @@ op                  : "==" -> op_eq
                     | ">="-> op_gte
                     | "<="-> op_lte
                     | "is"i -> op_is
+                    | "contains"i -> op_contains
+
 
 
 return_clause       : "return"i entity_id ("," entity_id)*

@@ -17,7 +17,7 @@ class HtmlToGraph(Node):
         # rprint(soup)
         _global_counter = 0
         traverse_html(
-            soup, graph._graph, defaultdict(int), _global_counter, hash_ids=False
+            soup, graph._graph, defaultdict(int), _global_counter, hash_ids=True
         )
         graph._graph = clean_graph(graph._graph)
 
