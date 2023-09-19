@@ -42,13 +42,18 @@ class GraphNearestNeighbor(Node):
                 anchor_node, score, snippet = anchor_node
                 results = {}
                 for cand_node in cand_nodes:
+                    cand_node_id = cand_node["id"]
                     # print(grid_node)
                     distance_meta = self.score_pairs_of_nodes(
-                        graph, anchor_node, cand_node
+                        graph, anchor_node, cand_node_id
                     )
                     # add child count to distance
-                    distance_meta["childs_count"] = len(graph.get_neighbors(cand_node))
-                    results[cand_node] = distance_meta
+                    distance_meta["childs_count"] = len(
+                        graph.get_neighbors(cand_node_id)
+                    )
+                    # add type to distance as meta
+                    distance_meta["type"] = cand_node["type"]
+                    results[cand_node_id] = distance_meta
                     # print("-------------------")
 
                 # sort by distance
@@ -76,6 +81,6 @@ class GraphNearestNeighbor(Node):
                     )
                     and distance["anchor_dist"] == min_dist["anchor_dist"]
                 ]
-                # TODO: remove sub childs duplciates
+                # TODO: remove sub childs duplciat
                 output[anchor_node] = best_nodes
             return {f"{node_type}_results": output}

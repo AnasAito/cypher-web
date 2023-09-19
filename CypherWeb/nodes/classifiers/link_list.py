@@ -24,7 +24,7 @@ class LinkListClassifier(Node):
         grid_candidates = get_link_list_candidates(graph)
         # annotate vertices
         attrs = {
-            node: {"type": ["link_list"] + graph._graph.nodes[node]["type"]}
+            node: {"type": ["linklist"] + graph._graph.nodes[node]["type"]}
             for node in grid_candidates
         }
 

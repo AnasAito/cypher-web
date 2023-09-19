@@ -40,13 +40,18 @@ class BaseStrRetriever(Node):
             query = params["query"]
             str_match_type = params.get("str_match_type", "exact")
             str_lower = params.get("str_lower", False)
-            node_type = params.get("node_type")
+            node_type = params.get("node_type", [])
+
+            def intersection(lst1, lst2):
+                return list(set(lst1) & set(lst2))
 
             def is_leaf_valid(node):
-                if node_type:
-                    return graph.nodes[node].get(
-                        "payload"
-                    ) and node_type in graph.nodes[node].get("type")
+                if len(node_type) > 0:
+                    return (
+                        graph.nodes[node].get("payload")
+                        and len(intersection(node_type, graph.nodes[node].get("type")))
+                        > 0
+                    )
                 return graph.nodes[node].get("payload")
 
             leafs = [node for node in graph.nodes if is_leaf_valid(node)]

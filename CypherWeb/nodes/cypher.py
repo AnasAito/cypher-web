@@ -73,7 +73,7 @@ skip_clause         : "skip"i NUMBER
                     | CNAME "." CNAME
 
 node_match          : "(" (CNAME)? (json_dict)? ")"
-                    | "(" (CNAME)? ":" TYPE (json_dict)? ")"
+                    | "(" (CNAME)? ":" TYPE ("|" TYPE)* (json_dict)? ")"
 
 edge_match          : LEFT_ANGLE? "--" RIGHT_ANGLE?
                     | LEFT_ANGLE? "-[]-" RIGHT_ANGLE?
@@ -175,6 +175,9 @@ class TreeToJson(Transformer):
     def op_is(self, _):
         return "is"
 
+    def op_contains(self, _):
+        return "contains"
+
     def json_dict(self, tup):
         constraints = {}
         for key, value in tup:
@@ -188,20 +191,20 @@ class TreeToJson(Transformer):
         self.params["page_url"] = use_clause
 
     def node_match(self, node_name):
-        cname = node_type = json_data = None
+        cname = json_data = None
+        node_types = []
         for token in node_name:
             if not isinstance(token, Token):
                 json_data = token
             elif token.type == "CNAME":
                 cname = token.value
             elif token.type == "TYPE":
-                node_type = token.value
+                node_types.append(token.value)
         cname = cname or Token("CNAME", shortuuid())
         json_data = json_data or {}
-        node_type = set([node_type]) if node_type else set()
 
         self.params["node_match"].append(
-            {"node_name": cname, "node_type": node_type, "json_data": json_data}
+            {"node_name": cname, "node_type": node_types, "json_data": json_data}
         )
         pass
 
@@ -287,21 +290,90 @@ class CypherApi(Node):
     def __init__(self) -> None:
         pass
 
-    def run(self, cypher_query: str, params: dict) -> dict:
-        tree = _AitoCypher.parse(cypher_query)
-        tree_payload = TreeToJson().transform(tree)
-        page_url = tree_payload["page_url"][0]
-        _params = {
-            "str_matcher": {
-                "node_type": "title",
-                "query": "trusted us",
-                "str_lower": True,
-                "str_match_type": "contains",
-            },
-            "graph_nn": {
-                "node_type": "grid",
+    def populate_params(self, tree):
+        """
+        Populates the parameters of the function.
+
+        Args:
+            tree (dict): The tree containing the node match and where clause.
+
+        Returns:
+            dict: The dictionary containing the string matcher and graph nn.
+
+        Raises:
+            TypeError: If no node match is found.
+
+        Notes:
+            - This is a hard-coded parsing of the tree for now to be switched with a propper mmotif matching
+            - If the node match is empty, a TypeError is raised.
+            - If the node match has only one element, the node type is extracted and filter is applied on the node itself.
+            - If the node match has multiple elements, we resolve to "ref_by_other_node" scenario.
+        """
+        node_match = tree["node_match"]
+        where_clause = tree["where_clause"]
+        if len(node_match) == 0:
+            raise TypeError("no node match")
+        if len(node_match) == 1:
+            node_type = node_match[0]["node_type"]
+
+            graph_nn = {
+                "node_type": [t.lower() for t in node_type],
                 "top_k_anchors": 10000,
                 "top_k_neighbors": 10000,
-            },
+                "node_include": len(where_clause) > 0,
+            }
+            str_matcher = {
+                # "node_type": "title",
+                "query": where_clause[0]["value"],
+                "str_lower": True,
+                "str_match_type": where_clause[0]["operator"],
+            }
+            return {
+                "str_matcher": str_matcher,
+                "graph_nn": graph_nn,
+            }
+        # node relation scenario
+        node_type = node_match[0]["node_type"]
+        edge_type = tree["edge_match"][0]
+        graph_nn = {
+            "node_type": [t.lower() for t in node_type],
+            "top_k_anchors": 10000,
+            "top_k_neighbors": 10000,
+            "node_include": False,
         }
+        str_matcher = {
+            "node_type": [t.lower() for t in node_match[1]["node_type"]],
+            "query": where_clause[0]["value"],  # should check on node type
+            "str_lower": True,
+            "str_match_type": where_clause[0]["operator"],
+        }
+        return {
+            "str_matcher": str_matcher,
+            "graph_nn": graph_nn,
+        }
+
+    def run(self, cypher_query: str, params: dict) -> dict:
+        from rich import print as pprint
+
+        tree = _AitoCypher.parse(cypher_query)
+        # pprint(tree)
+        tree_payload = TreeToJson().transform(tree)
+        # pprint(tree_payload)
+        page_url = tree_payload["page_url"][0]
+        _params = self.populate_params(tree_payload)
+        pprint(_params)
+        # _params = {
+        #     "str_matcher": {
+        #         "node_type": "title",
+        #         "query": "trusted by",
+        #         "str_lower": True,
+        #         "str_match_type": "contains",
+        #     },
+        #     "graph_nn": {
+        #         "node_type": "grid",
+        #         "top_k_anchors": 10000,
+        #         "top_k_neighbors": 10000,
+        #         "node_include": False,
+        #     },
+        # }
         return {"page_url": page_url, "params": _params}
