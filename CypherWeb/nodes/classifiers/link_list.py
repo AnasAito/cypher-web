@@ -3,6 +3,16 @@ from cypherweb.core.graph import Graph
 
 
 def node_is_link_list(graph, node_id):
+    """
+    Check if all the children of a given node in a graph are links.
+
+    Parameters:
+        graph (Graph): The graph object representing the graph.
+        node_id (str): The ID of the node to check the children of.
+
+    Returns:
+        bool: True if all the children are links, False otherwise.
+    """
     # all childs are links
     childs = graph.get_neighbors(node_id)
     # get hrefs
@@ -21,6 +31,15 @@ class LinkListClassifier(Node):
         pass
 
     def process(self, graph: Graph) -> None:
+        """
+        Process the given graph by annotating the vertices with linklist type.
+
+        Parameters:
+            graph (Graph): The graph to be processed.
+
+        Returns:
+            None
+        """
         grid_candidates = get_link_list_candidates(graph)
         # annotate vertices
         attrs = {

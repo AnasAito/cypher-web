@@ -78,6 +78,8 @@ class GraphNearestNeighbor(Node):
                 results = {}
                 for cand_node in cand_nodes:
                     cand_node_id = cand_node["id"]
+                    if cand_node_id == anchor_node:
+                        continue
                     # print(grid_node)
                     distance_meta = self.score_pairs_of_nodes(
                         graph, anchor_node, cand_node_id

@@ -360,7 +360,7 @@ class CypherApi(Node):
         # pprint(tree_payload)
         page_url = tree_payload["page_url"][0]
         _params = self.populate_params(tree_payload)
-        # pprint(_params)
+        pprint(_params)
         # _params = {
         #     "str_matcher": {
         #         "node_type": "title",
