@@ -13,7 +13,7 @@ def install(package):
 try:
     from cypherweb.pipelines import CypherWebPipeline
 except:
-    install("git+https://github.com/AnasAito/cypher-web")
+    install("https://github.com/AnasAito/cypher-web")
     from cypherweb.pipelines import CypherWebPipeline
 
 
