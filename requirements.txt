@@ -6,6 +6,6 @@ rich==12.6.0
 streamlit==1.21.0
 streamlit-ace==0.1.1
 streamlit-javascript==0.1.5
-cypherweb @ git+https://github.com/AnasAito/cypher-web
+cypher-web @ git+https://github.com/AnasAito/cypher-web
 
 
