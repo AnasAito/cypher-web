@@ -10,11 +10,11 @@ def install(package):
     subprocess.run(["pip", "install", package])
 
 
-try:
-    from cypherweb.pipelines import CypherWebPipeline
-except:
-    install("https://github.com/AnasAito/cypher-web")
-    from cypherweb.pipelines import CypherWebPipeline
+# try:
+#     from cypherweb.pipelines import CypherWebPipeline
+# except:
+#     install("https://github.com/AnasAito/cypher-web")
+#     from cypherweb.pipelines import CypherWebPipeline
 
 
 import streamlit as st
