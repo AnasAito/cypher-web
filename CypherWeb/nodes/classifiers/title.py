@@ -53,10 +53,27 @@ class TitleClassifier(Node):
         Returns:
             None
         """
-        grid_candidates = get_title_candidates(graph)
+        title_candidates = get_title_candidates(graph)
         # annotate vertices
-        attrs = {
-            node: {"type": ["title"] + graph._graph.nodes[node]["type"]}
-            for node in grid_candidates
-        }
+        # attrs = {
+        #     node: {"type": ["title"] + graph._graph.nodes[node]["type"]}
+        #     for node in title_candidates
+        # }
+        attrs = {}
+        for node in title_candidates:
+            attrs[node] = {"type": ["title"] + graph._graph.nodes[node]["type"]}
+            if not graph._graph.nodes[node].get("payload"):
+                # handle title wrapper
+                # get all childs
+                title_childs = [child["id"] for child in graph.get_neighbors(node)]
+                node_text = [
+                    graph._graph.nodes[child]["payload"]["text"]
+                    for child in title_childs
+                ]
+                attrs[node]["payload"] = {
+                    "text": " ".join(node_text),
+                    "href": None,
+                    "alt": None,
+                }
+
         graph.set_node_attributes(attrs)

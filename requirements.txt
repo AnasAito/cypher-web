@@ -1,0 +1,11 @@
+lark
+networkx==3.0
+pyvis==0.3.2
+requests==2.28.2
+rich==12.6.0
+streamlit==1.21.0
+streamlit-ace==0.1.1
+streamlit-javascript==0.1.5
+
+
+
