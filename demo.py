@@ -2,6 +2,20 @@
 # My first app
 Here's our first attempt at using data to create a table:
 """
+import subprocess
+import sys
+
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+
+try:
+    from cypherweb.pipelines import CypherWebPipeline
+except:
+    install("git+https://github.com/AnasAito/cypher-web")
+    from cypherweb.pipelines import CypherWebPipeline
+
 
 import streamlit as st
 import streamlit_javascript as st_js
