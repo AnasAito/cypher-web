@@ -3,3 +3,6 @@ lib
 /sandbox.ipynb
 *.html
 *.pyc
+.pypirc
+dist
+
