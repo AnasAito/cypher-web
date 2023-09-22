@@ -16,9 +16,6 @@ jobs:
         with:
           python-version: 3.x
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
       - name: Build and upload package to PyPI
         run: |
           python setup.py sdist bdist_wheel
