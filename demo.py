@@ -10,13 +10,6 @@ def install(package):
     subprocess.run(["pip", "install", package])
 
 
-# try:
-#     from cypherweb.pipelines import CypherWebPipeline
-# except:
-#     install("https://github.com/AnasAito/cypher-web")
-#     from cypherweb.pipelines import CypherWebPipeline
-
-
 import streamlit as st
 import streamlit_javascript as st_js
 from streamlit_ace import st_ace

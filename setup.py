@@ -4,11 +4,15 @@ setup(
     name="cypherweb",
     version="0.1.0",
     description="Query any web page with Cypher",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     author="Anas AIT AOMAR",
     author_email="anas1999@gmail.com",
     packages=["cypherweb"],
     install_requires=[
         # List any dependencies your module requires
+        "lark",
+        "networkx",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
