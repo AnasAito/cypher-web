@@ -2,7 +2,7 @@ import unittest
 from bs4 import BeautifulSoup
 from collections import defaultdict
 import networkx as nx
-from CypherWeb.html_to_graph import traverse_html
+from cypherweb.html_to_graph import traverse_html
 
 
 class TestHtmlToGraph(unittest.TestCase):

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "cypherweb"
+dependencies =[
+    "lark", "networkx", "pyvis", "rich", "beautifulsoup4", "requests",
+]
+description = "Query any web page with Cypher"
+authors = [
+    {name = "Anas AIT AOMAR", email = "anas1999@gmail.com"},
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "BSD (3-clause)"}
+dynamic = ["version"]
+
+
+[tool.setuptools.dynamic]
+version = {attr = "cypherweb.__version__"}
+
+
+[project.urls]
+repository = "https://github.com/AnasAito/cypher-web"
