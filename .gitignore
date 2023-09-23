@@ -6,3 +6,6 @@ lib
 .pypirc
 dist
 
+__cache__
+__pycache__
+*.egg-info
