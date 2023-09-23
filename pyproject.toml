@@ -17,6 +17,7 @@ license = {text = "BSD (3-clause)"}
 dynamic = ["version"]
 
 
+
 [tool.setuptools.dynamic]
 version = {attr = "cypherweb.__version__"}
 
