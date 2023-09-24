@@ -1,3 +1,4 @@
+
 <section align="center">
 
 # ``CypherWeb``
@@ -7,6 +8,15 @@
 [**Live demo**](https://cypher-web.streamlit.app/)
 
 </section>
+
+### Important Note: 
+This repository is currently a work in progress while you can use it for some basic yet good enough queries, I'm still sketching a propper dev roadmap for it that I can share with interested members of the community.
+
+The reason for this premature release is that I wanted to share the main idea behind it with the community and any development coming will only enhance it and make this tool usable in production environments
+
+### The key problem:
+The key problem that Cypherweb is trying to solve is very simple: we take for granted HTML data, in other words, we treat it as unstructured text and dont make use of its semistructured format.
+
 
 ![build](https://github.com/AnasAito/skillner/workflows/tests/badge.svg)
 [![Downloads](https://static.pepy.tech/badge/cypherweb)](https://pepy.tech/project/cypherweb)
