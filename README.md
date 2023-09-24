@@ -122,8 +122,30 @@ graph = search_pipe.graph._graph
 str_agg = ""
 render_element_from_root(graph, node_id, str_agg=str_agg, depth=0) 
 
-
 ```
+
+## Supported queries :
+as a start, Cypherweb supports two types of queries : 
+### Search for a typed/non-typed element using a filter on its text content.
+```cypher
+USE "https://weaviate.io/company/about-us"
+MATCH (a:Grid)
+WHERE a.text contains "feature a"
+RETURN a
+```
+### Search for a typed/non-typed element using its links to other elements.
+```cypher
+USE "https://weaviate.io/company/about-us"
+MATCH (a:Grid)-[e*1..2]->(t:Title)
+WHERE t.text contains "team"
+RETURN a, t
+```
+for the supported element types we have : 
+- Grids ``Grid``
+- Titles (headings for now) ``Title``
+- Links ``Link``
+- list of links ``ListLink``
+
 ## Work in progress : 
 - Add more consumer nodes (HTML consumer, Structured consumer (Python dict,JSON...))
 - Add/improve classifier nodes (paragraph detection,titles)
