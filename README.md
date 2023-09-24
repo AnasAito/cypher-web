@@ -113,4 +113,18 @@ RETURN a, t
 )
 rprint(search_pipe.passing_input)
 
+# preview your select HTML element as string
+# visualize node
+from cypherweb.utils.visualizations import render_element_from_root
+
+node_id = "div_66321657"
+graph = search_pipe.graph._graph
+str_agg = ""
+render_element_from_root(graph, node_id, str_agg=str_agg, depth=0) 
+
+
 ```
+## Work in progress : 
+- Add more consumer nodes (HTML consumer, Structured consumer (Python dict,JSON...))
+- Add/improve classifier nodes (paragraph detection,titles)
+- improve Cypher node (instead of a hardcoded transformation we can use native graph traversal supported by networkx (graph motifs))
