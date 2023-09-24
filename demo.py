@@ -2,12 +2,6 @@
 # My first app
 Here's our first attempt at using data to create a table:
 """
-import subprocess
-import sys
-
-
-def install(package):
-    subprocess.run(["pip", "install", package])
 
 
 import streamlit as st
@@ -19,8 +13,7 @@ from cypherweb.utils.visualizations import render_element_from_root
 
 st.set_page_config(page_title="CypherWeb Demo", page_icon="🎈", layout="wide")
 st.title("CypherWeb Demo")
-ui_width = st_js.st_javascript("window.innerWidth")
-# st.write(ui_width)
+
 cypher_query = """
 USE "https://weaviate.io/company/about-us"
 MATCH (a:Grid)-[e*1..2]->(t:Title)
@@ -45,7 +38,10 @@ with col3:
         font_size=20,
     )
 with col4:
-    components.iframe(st.session_state.page_url, height=600, scrolling=True)
+    with st.form(key="url_form"):
+        st.session_state["page_url"] = st.text_input(label="Enter a valid web-page url")
+        submit_button = st.form_submit_button(label="Submit")
+        components.iframe(st.session_state.page_url, height=600, scrolling=True)
 if "match" in query.lower():
     pipe = CypherWebPipeline()
     results = pipe.run(query)
