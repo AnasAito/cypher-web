@@ -9,7 +9,7 @@
 
 </section>
 
-### Important Note:
+### Important Note
 This repository is currently a work in progress.
 While you can use it for some basic yet good enough queries, I'm still sketching a proper dev roadmap for it that I can share with interested members of the community.
 
@@ -18,7 +18,7 @@ Upcoming development will enhance it and make this tool usable in production env
 
 A detailed article is soon to be published on how cypherweb works...
 
-### The key problem:
+### The key problem
 The key problem that cypherweb is trying to solve is very simple: we take for granted HTML data, in other words, we treat it as unstructured text and don't make use of its semistructured format.
 
 
@@ -125,7 +125,7 @@ str_agg = ""
 render_element_from_root(graph, node_id, str_agg=str_agg, depth=0)
 ```
 
-## Supported queries:
+## Supported queries
 
 As a start, cypherweb supports two types of queries
 - Search for a typed/non-typed element using a filter on its text content.
@@ -151,6 +151,6 @@ The currently supported elements are
 
 ## Work in progress
 
-- Add more consumer nodes (HTML consumer, Structured consumer (Python dict,JSON...))
+- Add more consumer nodes (HTML consumer, Structured consumer (Python dict, JSON, ...))
 - Add/improve classifier nodes (paragraph detection,titles)
 - improve Cypher node (instead of a hardcoded transformation we can use native graph traversal supported by networkx (graph motifs))
