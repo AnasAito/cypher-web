@@ -120,9 +120,10 @@ def traverse_html(
             _element_name = f"{element_name}_{_name_count}_{element_class}"
             node_id = _element_name
             if hash_ids:
-                node_id = f"{element_name}_{hash_element(_element_name)}"  # hash name
+                # hash name
+                node_id = f"{element_name}_{hash_element(_element_name)}"
 
-            ## entry_point
+            # entry_point
             if (
                 _parent is None
             ):  # and len(_graph.nodes) == 0: # disable this since some nodes may be orphan
@@ -138,6 +139,7 @@ def traverse_html(
                             node_id,
                             {
                                 "element_type": element_name,
+                                "all_element_types": [element_name],
                                 "element_name": _element_name,
                                 "item_index": global_counter,
                                 "class": "_CLASSJOIN_".join(element_class),
@@ -162,6 +164,7 @@ def traverse_html(
                             node_id,
                             {
                                 "element_type": element_name,
+                                "all_element_types": [element_name],
                                 "element_name": _element_name,
                                 "item_index": global_counter,
                                 "class": element_class,
@@ -243,7 +246,8 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
         return len(get_predecessors(graph, node)) == len(get_neighbors(graph, node))
 
     if only_intermediate:
-        nodes_to_delete = [node for node in graph.nodes if is_bridge_node(node)]
+        nodes_to_delete = [
+            node for node in graph.nodes if is_bridge_node(node)]
     else:
         nodes_to_delete = [
             node for node in graph.nodes if is_empty_leaf(node) or is_bridge_node(node)
@@ -259,12 +263,19 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
         # print(node)
         try:
             graph.add_edges_from(
-                itertools.product(graph.predecessors(node), graph.successors(node))
+                itertools.product(graph.predecessors(node),
+                                  graph.successors(node))
             )
             # update successors class
             for successor in graph.successors(node):
                 graph.nodes[successor]["class"] = (
-                    graph.nodes[node]["class"] + graph.nodes[successor]["class"]
+                    graph.nodes[node]["class"] +
+                    graph.nodes[successor]["class"]
+                )
+                # inherit list of element types
+                graph.nodes[successor]["all_element_types"] = (
+                    graph.nodes[node]["all_element_types"] +
+                    graph.nodes[successor]["all_element_types"]
                 )
                 # inherit root_status
                 graph.nodes[successor]["is_root"] = (
@@ -272,7 +283,7 @@ def clean_graph(graph, only_intermediate=False, node_type_exceptions=["a"]):
                 )
             graph.remove_node(node)
         except KeyError as e:
-            print(e)
+            print('failed to update nodes meta', e)
             pass
 
     # post root re-election

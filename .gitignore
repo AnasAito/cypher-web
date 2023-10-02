@@ -9,3 +9,5 @@ dist
 __cache__
 __pycache__
 *.egg-info
+cypher
+sandbox.ipynb

@@ -35,7 +35,9 @@ def get_title_candidates(graph):
     return [
         node
         for node in graph._graph.nodes
-        if is_elem_heading(graph._graph.nodes[node].get("element_type"))
+        if is_elem_heading(graph._graph.nodes[node].get("element_type")) or
+        any([is_elem_heading(elem_type)
+            for elem_type in graph._graph.nodes[node].get("all_element_types")])
     ]
 
 
@@ -61,11 +63,13 @@ class TitleClassifier(Node):
         # }
         attrs = {}
         for node in title_candidates:
-            attrs[node] = {"type": ["title"] + graph._graph.nodes[node]["type"]}
+            attrs[node] = {"type": ["title"] +
+                           graph._graph.nodes[node]["type"]}
             if not graph._graph.nodes[node].get("payload"):
                 # handle title wrapper
                 # get all childs
-                title_childs = [child["id"] for child in graph.get_neighbors(node)]
+                title_childs = [child["id"]
+                                for child in graph.get_neighbors(node)]
                 node_text = [
                     graph._graph.nodes[child]["payload"]["text"]
                     for child in title_childs
