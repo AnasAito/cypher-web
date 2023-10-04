@@ -6,5 +6,9 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"
   },
-  "python.formatting.provider": "none"
+  "python.formatting.provider": "none",
+  "git.autofetch": true,
+  "github.branchProtection": true,
+  "github.gitAuthentication": true,
+  "notebook.formatOnSave.enabled": true
 }

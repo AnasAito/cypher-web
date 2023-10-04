@@ -26,7 +26,7 @@ _AitoCypher = Lark(
     """
 start               : query
 
-query               : use_clause many_match_clause where_clause return_clause
+query               : many_match_clause where_clause return_clause
                     | many_match_clause return_clause
 
 
@@ -144,9 +144,9 @@ class TreeToJson(Transformer):
             "return_clause": [],
         }
 
-    null = lambda self, _: None
-    true = lambda self, _: True
-    false = lambda self, _: False
+    def null(self, _): return None
+    def true(self, _): return True
+    def false(self, _): return False
     ESTRING = v_args(inline=True)(eval)
     NUMBER = v_args(inline=True)(eval)
 
@@ -358,7 +358,7 @@ class CypherApi(Node):
         # pprint(tree)
         tree_payload = TreeToJson().transform(tree)
         # pprint(tree_payload)
-        page_url = tree_payload["page_url"][0]
+        # page_url = tree_payload["page_url"][0]
         _params = self.populate_params(tree_payload)
         pprint(_params)
         # _params = {
@@ -375,4 +375,4 @@ class CypherApi(Node):
         #         "node_include": False,
         #     },
         # }
-        return {"page_url": page_url, "params": _params}
+        return {"params": _params}

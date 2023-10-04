@@ -2,6 +2,7 @@ from typing import Dict, Union
 
 from cypherweb.core.node import Node
 from cypherweb.core.graph import Graph
+from cypherweb.core.url import Url
 import time
 
 
@@ -20,6 +21,7 @@ class GraphProcessPipeline:
 
     def __init__(self) -> None:
         self.dict_nodes: Dict[str, Node] = {}
+        self.graph = None
 
     def add_node(self, enricher: Node, name: str) -> None:
         """Append ``enricher`` to the pipeline.
@@ -45,7 +47,7 @@ class GraphProcessPipeline:
         for node in self.dict_nodes.values():
             node(graph)
 
-    def __call__(self, inputs: dict) -> None:
+    def build(self, url: Url) -> None:
         """Run the pipeline on graph.
 
         Pipeline will call sequentially enricher on the document.
@@ -54,7 +56,7 @@ class GraphProcessPipeline:
             Document to enrich.
 
         """
-        graph = inputs["_start"]["graph"]
+        graph = Graph(url.page_url)
         for node in self.dict_nodes.values():
             node(graph)
         return graph
@@ -88,13 +90,14 @@ class NodeSearchPipeline:
         """
         self.dict_nodes[name] = {"func": enricher}
 
-    def run(self, pipe_input: Union[dict, str]) -> None:
+    def run(self, graph, query: Union[dict, str]) -> None:
         """Run the pipeline on document"""
 
-        if type(pipe_input) == str and "cypher_api" in self.dict_nodes:
-            output = self.dict_nodes["cypher_api"]["func"](inputs=pipe_input, params={})
+        if type(query) == str and "cypher_api" in self.dict_nodes:
+            output = self.dict_nodes["cypher_api"]["func"](
+                inputs=query, params={})
             # prepare page_url , params
-            page_url = output["page_url"]
+            # page_url = output["page_url"]
             params = output["params"]
             # remove "cypher_api"
             self.dict_nodes = {
@@ -102,35 +105,22 @@ class NodeSearchPipeline:
             }
 
             pass
-        if type(pipe_input) == dict:
-            page_url = pipe_input["page_url"]
-            params = pipe_input["params"]
+        if type(query) == dict:
+            # page_url = query["page_url"]
+            params = query["params"]
 
-        self.graph = Graph(page_url)
-        self.passing_input = {"_start": {"page_url": page_url, "graph": self.graph}}
+        self.graph = graph
+        self.passing_input = {"graph_process_pipe": {
+            "page_url": None, "graph": self.graph}}
         for node_key, node_val in self.dict_nodes.items():
-            # TODO: normalize node running loop
             # compute time for each node
             start_time = time.time()
             _params = params.get(node_key, {})
             node = node_val["func"]
-            if isinstance(node, Node):
-                output = node(inputs=self.passing_input, params=_params)
-                end_time = time.time()
-                delta_time = end_time - start_time
-                delta_time = str(round(delta_time * 1000, 2)) + "ms"
-                output["run_time"] = delta_time
-                self.passing_input[node_key] = output
-            else:
-                processed_graph = node(
-                    inputs=self.passing_input,
-                )
-                self.graph = processed_graph
-                end_time = time.time()
-                delta_time = end_time - start_time
-                # time to ms str
-                delta_time = str(round(delta_time * 1000, 2)) + "ms"
-                self.passing_input[node_key] = {
-                    "graph": processed_graph,
-                    "run_time": delta_time,
-                }
+            output = node(inputs=self.passing_input, params=_params)
+            end_time = time.time()
+            delta_time = end_time - start_time
+            delta_time = str(round(delta_time * 1000, 2)) + "ms"
+            output["run_time"] = delta_time
+            self.passing_input[node_key] = output
+        return self.passing_input
